@@ -1,7 +1,7 @@
 pmpbelt - a utility belt for hypermedia APIs
 =======
 
-pmpbelt is a python SDK for working with the [PMP](http://docs.pmp.io). It uses and is heavily influenced by Requests. 
+pmpbelt is a python SDK for working with the [PMP](http://docs.pmp.io). It uses and is heavily influenced by [Requests](http://docs.python-requests.org/en/latest/). 
 
 ## Requirements
 
