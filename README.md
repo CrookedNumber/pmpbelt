@@ -1,7 +1,7 @@
 pmpbelt - a utility belt for hypermedia APIs
 =======
 
-pmpbelt is a python SDK for working with the [PMP](http://docs.pmp.io). 
+pmpbelt is a python SDK for working with the [PMP](http://docs.pmp.io). It uses and is heavily influenced by Requests. 
 
 ## Requirements
 
@@ -10,7 +10,7 @@ Requests for python is required.
     pip install requests
     
 
-uritemplate is also required
+[uritemplate](https://pypi.python.org/pypi/uritemplate) is also required for URI Templating.
 
     pip install uritemplate
     
@@ -37,7 +37,7 @@ First, do your imports, create an auth object, and pull the PMP home document
     # build an auth object
     my_auth = AuthClient( my_uri, client_id, client_secret)
 
-    # perform a GET on the PMP API
+    # perform a GET on the PMP API. BAM!
     home_doc = pmpbelt.get(my_uri, my_auth)
 
 
@@ -45,7 +45,7 @@ You've saved the home document as a pmpbelt object. Let's see what else we have 
 
     print home_doc.urns
     
-Prints out your URNs and Query Titles in key/value pairs:
+Prints out your URNs and Query Titles in key/value pairs (POW!):
     
     [{u'urn:pmp:query:users': u'Query for users'},
     {u'urn:pmp:query:groups': u'Query for groups'},
@@ -56,7 +56,7 @@ Prints out your URNs and Query Titles in key/value pairs:
     {u'urn:pmp:query:guids': u'Generate guids'},
     {u'urn:pmp:query:files': u'Upload media files'}]
     
-You can also access all links available in a document.
+( You can also access all links available in a document. SMACK! )
 
     home_doc.links            # all link relations
     home_doc.items            # item links, if available
@@ -64,11 +64,33 @@ You can also access all links available in a document.
     home_doc.editlinks        # edit links, if available
     home_doc.navlinks         # navigation links
     
-Choose a URN to query and set some corresponding parameters.  
+Let's choose the query for Query for Documents. Let's set its URN in a variable and see the options for that URN:
     
-    # Query for documents
     urn = 'urn:pmp:query:docs' 
+
+    print home_doc.options(urn)
     
+We see all query options for the given URN:
+    
+    {u'author': u'https://github.com/publicmediaplatform/pmpdocs/wiki/Content-Retrieval',
+     u'collection': u'https://github.com/publicmediaplatform/pmpdocs/wiki/Content-Retrieval',
+     u'distributor': u'https://github.com/publicmediaplatform/pmpdocs/wiki/Content-Retrieval',
+     u'distributorgroup': u'https://github.com/publicmediaplatform/pmpdocs/wiki/Content-Retrieval',
+     u'enddate': u'https://github.com/publicmediaplatform/pmpdocs/wiki/Content-Retrieval',
+     u'has': u'https://github.com/publicmediaplatform/pmpdocs/wiki/Content-Retrieval',
+     u'language': u'https://github.com/publicmediaplatform/pmpdocs/wiki/Content-Retrieval',
+     u'limit': u'https://github.com/publicmediaplatform/pmpdocs/wiki/Content-Retrieval',
+     u'offset': u'https://github.com/publicmediaplatform/pmpdocs/wiki/Content-Retrieval',
+     u'profile': u'https://github.com/publicmediaplatform/pmpdocs/wiki/Content-Retrieval',
+     u'searchsort': u'https://github.com/publicmediaplatform/pmpdocs/wiki/Content-Retrieval',
+     u'startdate': u'https://github.com/publicmediaplatform/pmpdocs/wiki/Content-Retrieval',
+     u'tag': u'https://github.com/publicmediaplatform/pmpdocs/wiki/Content-Retrieval',
+     u'text': u'https://github.com/publicmediaplatform/pmpdocs/wiki/Content-Retrieval'}
+    
+The links correspond to human readable documentation.
+
+Choose a few options and save them in a dict.
+
     # all documents tagged 'samplecontent', filtered by profile 'story'
     params = {'tag': 'samplecontent', 'profile': 'story'}
     
