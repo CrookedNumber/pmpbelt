@@ -14,7 +14,7 @@ Requests for python is required.
 
     pip install uritemplate
     
-And OAuth2 client is also required. A mature, OAuth2 conformant client like [rauth](https://github.com/litl/rauth) is recommended. For simplicity, we've included `simple_auth`, a very simple client.
+An OAuth2 client is also required. A mature, OAuth2 conformant client like [rauth](https://github.com/litl/rauth) is recommended. For simplicity, we've included `simple_auth`, a very simple client.
 
 You will need PMP credentials and a working knowledge of the PMP. Read the [Getting Started](https://github.com/publicmediaplatform/pmpdocs/wiki#getting-started) guide. You will need user/pw to generate `client_id` and `client_secret` before you can begin. 
 
