@@ -107,6 +107,8 @@ Finally, let's call `pmpbelt.get` again to query for 'story' documents tagged 's
 
     new_doc = pmpbelt.get(new_uri, my_auth, params)
 
+This project is open and seeking contributors who are working directly with the PMP. Fork and send a pull request.
+
 That's all for now. Tune in next time. Same Bat time. Same Bat channel.
 
     
