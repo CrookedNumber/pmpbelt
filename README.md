@@ -1,7 +1,7 @@
 pmpbelt - a utility belt for hypermedia APIs
 =======
 
-pmpbelt is a python SDK for working with the [PMP](http://docs.pmp.io). It uses and is heavily influenced by [Requests](http://docs.python-requests.org/en/latest/). 
+pmpbelt is a python SDK for working with the [PMP](http://docs.pmp.io). It uses and is heavily influenced by [Requests](http://docs.python-requests.org/en/latest/). And [Batman](http://en.wikipedia.org/wiki/Batman_(TV_series).
 
 ## Requirements
 
@@ -22,7 +22,7 @@ You will need PMP credentials and a working knowledge of the PMP. Read the [Gett
 
 ## Sample Usage
 
-First, do your imports, create an auth object, and pull the PMP home document
+First, do your imports, create an auth object, and retrieve the PMP home document (**BAM!**)
 
 
     import pmpbelt
@@ -37,7 +37,7 @@ First, do your imports, create an auth object, and pull the PMP home document
     # build an auth object
     my_auth = AuthClient( my_uri, client_id, client_secret)
 
-    # perform a GET on the PMP API. BAM!
+    # perform a GET on the PMP API. 
     home_doc = pmpbelt.get(my_uri, my_auth)
 
 
@@ -45,7 +45,7 @@ You've saved the home document as a pmpbelt object. Let's see what else we have 
 
     print home_doc.urns
     
-Prints out your URNs and Query Titles in key/value pairs (POW!):
+Prints out your URNs and Query Titles in key/value pairs (**POW!**):
     
     [{u'urn:pmp:query:users': u'Query for users'},
     {u'urn:pmp:query:groups': u'Query for groups'},
@@ -56,7 +56,7 @@ Prints out your URNs and Query Titles in key/value pairs (POW!):
     {u'urn:pmp:query:guids': u'Generate guids'},
     {u'urn:pmp:query:files': u'Upload media files'}]
     
-( You can also access all links available in a document. SMACK! )
+( You can also access all links available in a document. **SMACK!** )
 
     home_doc.links            # all link relations
     home_doc.items            # item links, if available
@@ -89,12 +89,25 @@ We see all query options for the given URN:
     
 The links correspond to human readable documentation.
 
+We also need to grab the URI template for our URN. We do that with the `.template` method:
+
+    new_uri = my_doc.template(urn)
+    
+Print `new_uri` to see what the template looks like. You can see all our query options listed.
+
+    https://api-sandbox.pmp.io/docs{?limit,offset,tag,collection,text,searchsort,has,author,distributor,distributorgroup,startdate,enddate,profile,language}
+
+
 Choose a few options and save them in a dict.
 
     # all documents tagged 'samplecontent', filtered by profile 'story'
     params = {'tag': 'samplecontent', 'profile': 'story'}
     
+Finally, let's call `pmpbelt.get` again to query for 'story' documents tagged 'samplecontent'. This time, we pass our params into the method call. (**KAPLOOEY!!**)
 
+    new_doc = pmpbelt.get(new_uri, my_auth, params)
+
+That's all for now. Tune in next time. Same Bat time. Same Bat channel.
 
     
     
