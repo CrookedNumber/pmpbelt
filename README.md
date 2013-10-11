@@ -41,7 +41,7 @@ First, do your imports, create an auth object, and retrieve the PMP home documen
     home_doc = pmpbelt.get(my_uri, my_auth)
 
 
-You've saved the home document as a pmpbelt object. Let's see what else we have in there:
+You've retrieved the home document as a [Collection.doc+JSON](https://github.com/publicmediaplatform/pmpdocs/wiki/Content-Types,-Profiles-and-Schemas) object. Let's see what else we have in there:
 
     print home_doc.urns
     
