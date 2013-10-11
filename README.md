@@ -14,7 +14,7 @@ uritemplate is also required
 
     pip install uritemplate
     
-And OAuth2 client is also required. A mature, OAuth2 conformant client like rauth is recommended. For simplicity, we've included `simple_auth`, a very simple client.
+And OAuth2 client is also required. A mature, OAuth2 conformant client like [rauth](https://github.com/litl/rauth) is recommended. For simplicity, we've included `simple_auth`, a very simple client.
 
 You will need PMP credentials and a working knowledge of the PMP. Read the [Getting Started](https://github.com/publicmediaplatform/pmpdocs/wiki#getting-started) guide. You will need user/pw to generate `client_id` and `client_secret` before you can begin. 
 
@@ -63,6 +63,14 @@ You can also access all links available in a document.
     home_doc.querylinks       # query links
     home_doc.editlinks        # edit links, if available
     home_doc.navlinks         # navigation links
+    
+Choose a URN to query and set some corresponding parameters.  
+    
+    # Query for documents
+    urn = 'urn:pmp:query:docs' 
+    
+    # all documents tagged 'samplecontent', filtered by profile 'story'
+    params = {'tag': 'samplecontent', 'profile': 'story'}
     
 
 
