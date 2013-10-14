@@ -64,9 +64,10 @@ class AuthClient(object):
         refresh = refresh
         
         #set our headers for requests
-        headers = {'Authorization': 'CLIENT_CREDENTIALS ' + my_hash}
+        headers = {'Authorization': 'Basic ' + my_hash, 
+                    'Content-Type': 'application/x-www-form-urlencoded'}
         
-        r = requests.get(my_uri, headers=headers)
+        r = requests.post(my_uri, headers=headers)
         
         if r.status_code == 200:
             my_data = r.json()
