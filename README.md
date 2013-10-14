@@ -1,7 +1,7 @@
 pmpbelt - a utility belt for hypermedia APIs
 =======
 
-pmpbelt is a python SDK for working with the [PMP](http://docs.pmp.io). It uses and is heavily influenced by [Requests](http://docs.python-requests.org/en/latest/). And [Batman](http://en.wikipedia.org/wiki/Batman_(TV_series).
+pmpbelt is a python SDK for working with the [PMP](http://docs.pmp.io). It uses and is heavily influenced by [Requests](http://docs.python-requests.org/en/latest/). And [Batman](http://en.wikipedia.org/wiki/Batman_(TV_series\)).
 
 ## Requirements
 
@@ -14,7 +14,7 @@ Requests for python is required.
 
     pip install uritemplate
     
-And OAuth2 client is also required. A mature, OAuth2 conformant client like [rauth](https://github.com/litl/rauth) is recommended. For simplicity, we've included `simple_auth`, a very simple client.
+An OAuth2 client is also required. A mature, OAuth2 conformant client like [rauth](https://github.com/litl/rauth) is recommended. For simplicity, we've included `simple_auth`, a very simple client.
 
 You will need PMP credentials and a working knowledge of the PMP. Read the [Getting Started](https://github.com/publicmediaplatform/pmpdocs/wiki#getting-started) guide. You will need user/pw to generate `client_id` and `client_secret` before you can begin. 
 
@@ -41,7 +41,7 @@ First, do your imports, create an auth object, and retrieve the PMP home documen
     home_doc = pmpbelt.get(my_uri, my_auth)
 
 
-You've saved the home document as a pmpbelt object. Let's see what else we have in there:
+You've retrieved the home document as a [Collection.doc+JSON](https://github.com/publicmediaplatform/pmpdocs/wiki/Content-Types,-Profiles-and-Schemas) object. Let's see what else we have in there:
 
     print home_doc.urns
     
@@ -106,6 +106,9 @@ Choose a few options and save them in a dict.
 Finally, let's call `pmpbelt.get` again to query for 'story' documents tagged 'samplecontent'. This time, we pass our params into the method call. (**KAPLOOEY!!**)
 
     new_doc = pmpbelt.get(new_uri, my_auth, params)
+
+## Contributions
+This project is open and seeking contributors who are working directly with the PMP. Fork and send a pull request.
 
 That's all for now. Tune in next time. Same Bat time. Same Bat channel.
 
