@@ -17,9 +17,18 @@ def get(uri, my_auth, params=None):
     """
     if params:
         uri = uritemplate.expand(uri, params)
-        print "NEW " , uri
+    
+    return GetCollectionDoc(uri, my_auth)
+    
 
-    return CollectionDoc(uri, my_auth)
+def put():
+    pass
+
+def post():
+    pass
+
+def delete():
+    pass
 
         
 
@@ -33,7 +42,7 @@ class CollectionDoc(object):
     #read_links = ""
    
     
-    def __init__(self, uri, my_auth):
+    def __init__(self, uri, authtoken):
         """
         Init doc string
         Creating the CollectionDoc
@@ -45,20 +54,35 @@ class CollectionDoc(object):
         #if uri[-1] != "/":
         #   uri += "/"
         
-        #self.uri = uri
+        self.uri = uri
 
-        # holds auth_token 
-        self.my_token = my_auth.get_token()
+        self.authtoken = authtoken
+
+class GetCollectionDoc(CollectionDoc):
+    '''
+    Doc string
+    '''
+
+    def __init__(self, uri, my_auth):
+
+        # set attibutes from super class
+        CollectionDoc.__init__(self, uri, my_auth)
 
         # Retrieve the document from the given URL.  
         # Document is never empty. It will throw exception if it is empty.
-        self.document = self.get_document(uri)
+        self.document = self.get_document()
         
         # all links
-        self.links = self._extract_links(self.document['links'])
-        
+        try:
+            self.links = self._extract_links(self.document['links'])
+        except:
+            self.links = []
+
         # query links (read-only)
-        self.querylinks = self._extract_links(self.document['links']['query'])
+        try:
+            self.querylinks = self._extract_links(self.document['links']['query'])
+        except:
+            self.querylinks = []
 
         # item links (only collection docs have, so handle)
         try:
@@ -74,13 +98,18 @@ class CollectionDoc(object):
 
 
         # edit links
-        self.editlinks = self._extract_links(self.document['links']['edit'])
+        try:
+            self.editlinks = self._extract_links(self.document['links']['edit'])
+        except:
+            self.editlinks = []
 
         # dictionary of urns / query titles
-        self.urns = self._extract_query_types()
-
+        try:
+            self.urns = self._extract_query_types()
+        except:
+            self.urns = {}
         
-    def get_document(self, uri):
+    def get_document(self):
         """
         Performs HTTP GET to retrieve from PMP API
         Args: 
@@ -88,10 +117,10 @@ class CollectionDoc(object):
         Raises: 
         """
         #set our headers for requests
-        headers = {'Authorization': 'Bearer ' + self.my_token, 
+        headers = {'Authorization': 'Bearer ' + self.authtoken, 
                    'Content-Type': 'application/json'}
                 
-        r = requests.get(uri, headers=headers)
+        r = requests.get(self.uri, headers=headers)
     
         document = r.json()
         return document 
