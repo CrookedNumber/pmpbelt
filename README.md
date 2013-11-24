@@ -35,10 +35,10 @@ First, do your imports, create an auth object, and retrieve the PMP home documen
     my_uri = "https://api-sandbox.pmp.io"   
     
     # build an auth object
-    my_auth = AuthClient( my_uri, client_id, client_secret)
+    authtoken = AuthClient( my_uri, client_id, client_secret).get_token()
 
     # perform a GET on the PMP API. 
-    home_doc = pmpbelt.get(my_uri, my_auth)
+    home_doc = pmpbelt.get(my_uri, authtoken)
 
 
 You've retrieved the home document as a [Collection.doc+JSON](https://github.com/publicmediaplatform/pmpdocs/wiki/Content-Types,-Profiles-and-Schemas) object. Let's see what else we have in there:
@@ -105,7 +105,7 @@ Choose a few options and save them in a dict.
     
 Finally, let's call `pmpbelt.get` again to query for 'story' documents tagged 'samplecontent'. This time, we pass our params into the method call. (**KAPLOOEY!!**)
 
-    new_doc = pmpbelt.get(new_uri, my_auth, params)
+    new_doc = pmpbelt.get(new_uri, authtoken, params)
 
 ## Contributions
 This project is open and seeking contributors who are working directly with the PMP. Fork and send a pull request.
