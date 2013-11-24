@@ -58,17 +58,10 @@ class CollectionDoc(object):
         Setting a bunch of attributes for links, 
         queries, navlinks, items, etc.
         """
-        
-        # ADDING A TRAILING SLASH BREAKS SHIT IN REQUESTS
-        #if uri[-1] != "/":
-        #   uri += "/"
-        
+                
         self.uri = uri
         self.authtoken = authtoken
 
-        # initialize as a blank document object
-        
-        
         self.attributes = {}
 
         # many convenient attributes as shortcuts for links
@@ -80,9 +73,7 @@ class CollectionDoc(object):
         self.urns = {} # why is this a dict?
         
         self.items = [] # expanded items array
-        
         self.error = {}
-
         self.document = {"version": "1.0", "attributes": self.attributes, 
                         "links" : self.links, "items" : self.items } # full doc. unordered dic.
         
