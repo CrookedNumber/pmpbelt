@@ -5,9 +5,8 @@ Module doc string here
 """
 import requests
 import uritemplate
-import json
+from uuid import uuid4
 from pprint import pprint
-
 
 
 def get(uri, my_auth, params=None):
@@ -17,31 +16,41 @@ def get(uri, my_auth, params=None):
     """
     if params:
         uri = uritemplate.expand(uri, params)
+
+    collection_doc = CollectionDoc(uri, my_auth)
+
+    # store full json as CollectionDoc document attribute
+    document = collection_doc.get_document()
     
-    return GetCollectionDoc(uri, my_auth)
+    collection_doc.parse_document(document)
+
+    return collection_doc
     
 
 def put():
     pass
 
-def post():
+def post(uri, my_auth):
     pass
+
+
 
 def delete():
     pass
 
+# create a new blank collection doc w/ GUID
+def new(uri, my_auth):
+    new_doc = CollectionDoc(uri, my_auth)
+    new_doc.attributes["guid"] = str(uuid4())
+    return new_doc
+    
         
 
 class CollectionDoc(object):
     """m
     Class doc string
     """
-    
-    #uri = ""
-    #read_only_links = ""
-    #read_links = ""
    
-    
     def __init__(self, uri, authtoken):
         """
         Init doc string
@@ -55,59 +64,27 @@ class CollectionDoc(object):
         #   uri += "/"
         
         self.uri = uri
-
         self.authtoken = authtoken
 
-class GetCollectionDoc(CollectionDoc):
-    '''
-    Doc string
-    '''
-
-    def __init__(self, uri, my_auth):
-
-        # set attibutes from super class
-        CollectionDoc.__init__(self, uri, my_auth)
-
-        # Retrieve the document from the given URL.  
-        # Document is never empty. It will throw exception if it is empty.
-        self.document = self.get_document()
+        # initialize as a blank document object
         
-        # all links
-        try:
-            self.links = self._extract_links(self.document['links'])
-        except:
-            self.links = []
+        
+        self.attributes = {}
 
-        # query links (read-only)
-        try:
-            self.querylinks = self._extract_links(self.document['links']['query'])
-        except:
-            self.querylinks = []
+        # many convenient attributes as shortcuts for links
+        self.links = {}
+        self.querylinks = []
+        self.itemlinks = [] # item links, not the expanded items
+        self.navlinks = []
+        self.editlinks = []
+        self.urns = {} # why is this a dict?
+        
+        self.items = [] # expanded items array
+        
+        self.error = {}
 
-        # item links (only collection docs have, so handle)
-        try:
-            self.items = self._extract_links(self.document['links']['item'])
-        except:
-            self.items = []
-
-        # nav links (not every doc has nav, so handle)
-        try:
-            self.navlinks = self._extract_links(self.document['links']['navigation'])
-        except:
-            self.navlinks = []
-
-
-        # edit links
-        try:
-            self.editlinks = self._extract_links(self.document['links']['edit'])
-        except:
-            self.editlinks = []
-
-        # dictionary of urns / query titles
-        try:
-            self.urns = self._extract_query_types()
-        except:
-            self.urns = {}
+        self.document = {"version": "1.0", "attributes": self.attributes, 
+                        "links" : self.links, "items" : self.items } # full doc. unordered dic.
         
     def get_document(self):
         """
@@ -121,12 +98,72 @@ class GetCollectionDoc(CollectionDoc):
                    'Content-Type': 'application/json'}
                 
         r = requests.get(self.uri, headers=headers)
-    
-        document = r.json()
-        return document 
+        return r.json()
+
+
+    def parse_document(self, document):
+
+        self.document = document # it will always return something or blank
+
+        # all links
+        try:
+            self.links = self._extract_obj(self.document['links'])
+        except:
+            self.links = {}
+
+        # query links (read-only)
+        try:
+            self.querylinks = self._extract_obj(self.document['links']['query'])
+        except:
+            self.querylinks = []
+
+        # item links (only collection docs have, so handle)
+        try:
+            self.itemlinks = self._extract_obj(self.document['links']['item'])
+        except:
+            self.itemlinks = []
+
+        # nav links (not every doc has nav, so handle)
+        try:
+            self.navlinks = self._extract_obj(self.document['links']['navigation'])
+        except:
+            self.navlinks = []
+
+        # edit links
+        try:
+            self.editlinks = self._extract_obj(self.document['links']['edit'])
+        except:
+            self.editlinks = []
+
+        # dictionary of urns / query titles
+        try:
+            self.urns = self._extract_query_types()
+        except:
+            self.urns = {}
+
+        # attributes
+        try:
+            self.attributes = self._extract_obj(self.document['attributes'])
+        except:
+            self.attributes = {}
+
+        # error
+        try:
+            self.error = self._extract_obj(self.document['error'])
+        except:
+            self.error = {}
+
+        # items
+        try:
+            self.items = self._extract_obj(self.document['error'])
+        except:
+            self.items = []
+
+        return None
+
 
     
-    def _extract_links(self, doc_link_key):
+    def _extract_obj(self, doc_key):
         """
         Extracts the links object from document and returns variables to hold 
         all links, edit links, and query links.
@@ -139,7 +176,7 @@ class GetCollectionDoc(CollectionDoc):
         """
         if (self.document):
             try:
-                links = doc_link_key
+                links = doc_key
                 return links
                 
             except KeyError:
