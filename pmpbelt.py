@@ -41,7 +41,9 @@ def delete():
 # create a new blank collection doc w/ GUID
 def new(uri, my_auth):
     new_doc = CollectionDoc(uri, my_auth)
-    new_doc.attributes["guid"] = str(uuid4())
+    new_doc.guid =new_doc.attributes["guid"] = str(uuid4())
+    #new_doc.attributes["guid"] = str(uuid4())
+
     return new_doc
     
         
@@ -51,31 +53,33 @@ class CollectionDoc(object):
     Class doc string
     """
    
-    def __init__(self, uri, authtoken):
+    def __init__(self, homedoc, authtoken):
         """
         Init doc string
         Creating the CollectionDoc
         Setting a bunch of attributes for links, 
         queries, navlinks, items, etc.
         """
-                
-        self.uri = uri
+
+        self.homedoc = homedoc
+        self.url = "" # this is the dereferencable address of the doc
+        self.guid = ""
         self.authtoken = authtoken
 
-        self.attributes = {}
+        self.attributes = {} # public?
 
         # many convenient attributes as shortcuts for links
-        self.links = {}
-        self.querylinks = []
-        self.itemlinks = [] # item links, not the expanded items
-        self.navlinks = []
-        self.editlinks = []
-        self.urns = {} # why is this a dict?
+        self.links = {}     # public?
+        self.querylinks = [] # make private?
+        self.itemlinks = [] # item links, not the expanded items. Make private?
+        self.navlinks = [] # private?
+        self.editlinks = [] #private?
+        self.queries = {} # why is this a dict?
         
         self.items = [] # expanded items array
-        self.error = {}
+        self.error = {} # public
         self.document = {"version": "1.0", "attributes": self.attributes, 
-                        "links" : self.links, "items" : self.items } # full doc. unordered dic.
+                        "links" : self.links, "items" : self.items } # full doc. unordered dic. Private?
         
     def get_document(self):
         """
@@ -88,7 +92,7 @@ class CollectionDoc(object):
         headers = {'Authorization': 'Bearer ' + self.authtoken, 
                    'Content-Type': 'application/json'}
                 
-        r = requests.get(self.uri, headers=headers)
+        r = requests.get(self.homedoc, headers=headers)
         return r.json()
 
 
@@ -128,9 +132,9 @@ class CollectionDoc(object):
 
         # dictionary of urns / query titles
         try:
-            self.urns = self._extract_query_types()
+            self.queries = self._extract_query_types()
         except:
-            self.urns = {}
+            self.queries = {}
 
         # attributes
         try:
@@ -149,6 +153,12 @@ class CollectionDoc(object):
             self.items = self._extract_obj(self.document['error'])
         except:
             self.items = []
+
+
+        #try:
+        #    self.url = self.get_self()
+        #except:
+        #    self.items = []
 
         return None
 
@@ -190,12 +200,14 @@ class CollectionDoc(object):
         return urns
         
 
-    def template(self, urn):
+    def uritemplate(self, urn, linklist=None):
         """
         grabs uri from href-template for a given urn
         """
+        if linklist is None:
+            linklist = self.querylinks
 
-        for link in self.querylinks:
+        for link in linklist:
            if link['rels'][0] == urn:
 
                 try: # do we have a link?
@@ -207,19 +219,39 @@ class CollectionDoc(object):
                     raise e
 
 
-    def query_urn(self, urn):
+    def query_urn(self, urn, linklist=None):
+        """
+        Query by URN. Does a lookup of the href-template 
+        Args : 
+             :linklist: The list of links (navlinks, editlinks, querylinks, etc)  
+                default is self.querylinks
+        Returns : 
+        Raises :        
+        """
+        if linklist is None:
+            linklist = self.querylinks
+
+        for link in linklist:
+           if link['rels'][0] == urn:
+                
+                #return our link options
+
+                return link 
+
+    # remove this. No longer necessary. Can remove
+    def get_self(self, urn):
         """
         Query by URN. Does a lookup of the href-template 
         Args : 
         Returns : 
         Raises :        
         """
-        for link in self.querylinks:
+        for link in self.navlinks:
            if link['rels'][0] == urn:
                 
                 #return our link options
 
-                return link 
+                return link['href']
 
 
     def options(self, urn):
