@@ -12,7 +12,7 @@ from pprint import pprint
 def get(uri, my_auth, params=None):
     """
     Performs a GET on the PMP
-    Crates and returns a CollectionDoc object
+    Creates and returns a CollectionDoc object
     """
     if params:
         uri = uritemplate.expand(uri, params)
